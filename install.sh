@@ -1,9 +1,5 @@
 #!/bin/bash
-
-
-
-
-
+# This script installs Arch Linux using makepkg to build yaourt.
 ## PREINSTALLATION
 
 # Verify network connectivity
@@ -14,12 +10,20 @@ ping -c 2 linux.org
 # Show available disks.
 fdisk -l
 
-# Prompt for disk to use.
-# Query for hostname
+# Filter lists to create a numbered list to choose from.
 
+# Prompt for disk to use.
+echo
+echo -e "Select a disk to use (sda, sdb, sdc, etc):"
+read InstallDisk
+
+# Query for hostname
+echo
+echo -e "Enter hostname for system:"
+read HostName
 
 # Partition the Disk
-parted -a optimal /dev/$$$$$
+parted -a optimal /dev/$InstallDisk
 mklabel gpt
 unit mib
 mkpart primary 1 3
@@ -35,14 +39,14 @@ print
 q
 
 # Format the Disks
-mkfs.vfat /dev/$$$$1
-mkfs.ext2 -L "boot" /dev/$$$$2
-mkfs.ext4 -L "rootfs" /dev/$$$$3
+mkfs.vfat /dev/${InstallDisk}1
+mkfs.ext2 -L "boot" /dev/${InstallDisk}2
+mkfs.ext4 -L "rootfs" /dev/${InstallDisk}3
 
 # Mount the Disks
 mkdir /mnt/boot
-mount /dev/$$$$2 /mnt/boot
-mount /dev/$$$$3 /mnt
+mount /dev/${InstallDisk}2 /mnt/boot
+mount /dev/${InstallDisk}3 /mnt
 
 ## INSTALLATION
 # Select the mirrors
@@ -57,7 +61,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt
 
 # Generate HOSTNAME file
-echo "XXXXXXX" > /etc/hostname
+echo $HostName > /etc/hostname
 
 # Set Locale to Melbourne
 ln -sf /usr/share/zoneinfo/Australia/Melbourne /etc/localtime
